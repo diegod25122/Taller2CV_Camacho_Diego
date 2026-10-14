@@ -1,7 +1,7 @@
 // guarda los datos del CV
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { CVData, PersonalInfo, Experience, Education } from "../types/cv.types";
+import { CVData, PersonalInfo, Experience, Education, Skill } from "../types/cv.types";
 
 interface CVContextType {
   cvData: CVData;
@@ -12,6 +12,9 @@ interface CVContextType {
   addEducation: (edu: Education) => void;
   updateEducation: (id: string, edu: Education) => void;
   deleteEducation: (id: string) => void;
+  updatePhoto: (uri: string | null) => void;
+  addSkill: (skill: Skill) => void;
+  deleteSkill: (id: string) => void;
 }
 
 const CVContext = createContext<CVContextType | undefined>(undefined);
@@ -25,8 +28,10 @@ export const CVProvider = ({ children }: { children: ReactNode }) => {
       location: "",
       summary: "",
     },
+    photoUri: null,
     experience: [],
     education: [],
+    skills: [],
   });
 
   const updatePersonalInfo = (info: PersonalInfo) => {
@@ -75,6 +80,21 @@ export const CVProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const updatePhoto = (uri: string | null) => {
+    setCVData((prev) => ({ ...prev, photoUri: uri }));
+  };
+
+  const addSkill = (skill: Skill) => {
+    setCVData((prev) => ({ ...prev, skills: [...prev.skills, skill] }));
+  };
+
+  const deleteSkill = (id: string) => {
+    setCVData((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((s) => s.id !== id),
+    }));
+  };
+
   return (
     <CVContext.Provider
       value={{
@@ -86,6 +106,9 @@ export const CVProvider = ({ children }: { children: ReactNode }) => {
         addEducation,
         updateEducation,
         deleteEducation,
+        updatePhoto,
+        addSkill,
+        deleteSkill,
       }}
     >
       {children}

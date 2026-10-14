@@ -5,6 +5,7 @@ import { View, Text, ScrollView, Alert } from "react-native";
 import {useRouter} from "expo-router";
 import { useForm } from "react-hook-form";
 import { FormInput } from "../components/FormFields";
+import { PhotoPicker } from "../components/PhotoPicker";
 import {NavigationButton} from "../components/NavigationButton";
 import { formScreenStyles } from "../constants/form-styles";
 import { useCVContext } from "../context/CVContext";
@@ -13,7 +14,7 @@ import { rules } from "../utils/validators";
 
 export  default function PersonalInfoScreen(){
     const router = useRouter();
-    const { cvData, updatePersonalInfo}= useCVContext();
+    const { cvData, updatePersonalInfo, updatePhoto}= useCVContext();
     // el formulario se inicializa con los datos guardados; los errores se validan mientras se escribe
     const { control, handleSubmit } = useForm<PersonalInfo>({
         mode: "onChange",
@@ -29,6 +30,8 @@ export  default function PersonalInfoScreen(){
     return(
         <ScrollView style={styles.container}>
         <View style={styles.content}>
+            {/* la foto se guarda al instante, independiente del botón Guardar */}
+            <PhotoPicker uri={cvData.photoUri} onChange={updatePhoto} />
             <Text style={styles.sectionTitle}>Datos de Contacto</Text>
             <FormInput
             control={control}

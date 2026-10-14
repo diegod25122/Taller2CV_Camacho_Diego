@@ -1,6 +1,7 @@
 //se encarga de tomar la informacio  y diseñar diseñños atractivos simulando como se veria un cv real
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { Image } from "expo-image";
 import { CVData } from "../types/cv.types";
 import { formatDate } from "../utils/date";
 
@@ -9,13 +10,18 @@ interface CVPreviewProps {
 }
 
 export const CVPreview: React.FC<CVPreviewProps> = ({ cvData }) => {
-  const { personalInfo, experience, education } = cvData;
+  const { personalInfo, photoUri, experience, education, skills } = cvData;
+  const hardSkills = skills.filter((s) => s.type === "hard");
+  const softSkills = skills.filter((s) => s.type === "soft");
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         {/* Header con información personal */}
         <View style={styles.header}>
+          {photoUri && (
+            <Image source={{ uri: photoUri }} style={styles.photo} contentFit="cover" />
+          )}
           <Text style={styles.name}>
             {personalInfo.fullName || "Tu Nombre"}
           </Text>
@@ -81,10 +87,32 @@ export const CVPreview: React.FC<CVPreviewProps> = ({ cvData }) => {
           </View>
         )}
 
+        {/* Habilidades */}
+        {skills.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>HABILIDADES</Text>
+            {[
+              { title: "Técnicas", list: hardSkills },
+              { title: "Blandas", list: softSkills },
+            ].map(
+              (group) =>
+                group.list.length > 0 && (
+                  <View key={group.title} style={styles.item}>
+                    <Text style={styles.itemSubtitle}>{group.title}</Text>
+                    <Text style={styles.itemDescription}>
+                      {group.list.map((s) => s.name).join(" · ")}
+                    </Text>
+                  </View>
+                )
+            )}
+          </View>
+        )}
+
         {/* Mensaje si no hay datos */}
         {!personalInfo.fullName &&
           experience.length === 0 &&
-          education.length === 0 && (
+          education.length === 0 &&
+          skills.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={styles.emptyText}>
                 No hay información para mostrar.{"\n"}
@@ -110,6 +138,12 @@ const styles = StyleSheet.create({
     borderBottomColor: "#3498db",
     paddingBottom: 16,
     marginBottom: 24,
+  },
+  photo: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    marginBottom: 12,
   },
   name: {
     fontSize: 32,

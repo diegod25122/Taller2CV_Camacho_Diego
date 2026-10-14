@@ -25,8 +25,19 @@ export interface Education{
     graduationDate : string;
 }
 
+export type SkillType = "soft" | "hard";
+
+export interface Skill{
+    id : string;
+    name : string;
+    type : SkillType;
+}
+
 export interface CVData{
     personalInfo : PersonalInfo;
+    // uri local de la foto de perfil (cámara o galería)
+    photoUri : string | null;
     experience : Experience[];
     education : Education[];
+    skills : Skill[];
 }

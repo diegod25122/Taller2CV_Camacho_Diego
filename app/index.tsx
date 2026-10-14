@@ -1,7 +1,7 @@
 //home (la primera pestaña que se ve al abrir la app)
 
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useCVContext } from "../context/CVContext";
 
@@ -15,9 +15,13 @@ export default function HomeScreen() {
     cvData.personalInfo.fullName && cvData.personalInfo.email;
   const hasExperience = cvData.experience.length > 0;
   const hasEducation = cvData.education.length > 0;
+  const hasSkills = cvData.skills.length > 0;
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.scroll}
+      contentContainerStyle={styles.container}
+    >
       <Text style={styles.title}>Crea tu CV Profesional</Text>
 
       <View style={styles.section}>
@@ -63,6 +67,19 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>4. Habilidades</Text>
+        <Text style={styles.status}>
+          {hasSkills ? `✓ ${cvData.skills.length} agregada(s)` : "Pendiente"}
+        </Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/skills")}
+        >
+          <Text style={styles.buttonText}>Agregar</Text>
+        </TouchableOpacity>
+      </View>
+
       <View style={{ marginTop: 30 }}>
         <TouchableOpacity
           style={[styles.button, { backgroundColor: "#2ecc71" }]}
@@ -71,15 +88,17 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>Ver Vista Previa del CV</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scroll: {
     flex: 1,
-    padding: 20,
     backgroundColor: "#f5f5f5",
+  },
+  container: {
+    padding: 20,
   },
   title: {
     fontSize: 24,
